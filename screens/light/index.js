@@ -1,18 +1,54 @@
-import React, {useState} from 'react';
+import React, {useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Text, Switch, Button, Block} from 'galio-framework';
 import {View, StyleSheet} from 'react-native';
 
+const HTTP_PROXY_BASE_URL = 'http://54.83.145.237:3000';
+
+
 const LightStatus = ({navigation}) => {
   const [status, setStatus] = useState(false);
+  const [message, setMessage] = useState('');
 
   const getIcon = () => {
-    if (status == false) {
+    if (status === false) {
       return {name: 'lightbulb-off', color: '#CCC'};
     }
     return {name: 'lightbulb-on', color: '#FFB347'};
   };
 
+  const handleLightToggle = () => {
+    const payload = {
+      type: 'USER_COMMAND',
+      light: !status ? 1 : 0,
+    };
+    fetch(`${HTTP_PROXY_BASE_URL}/light-status`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    })
+      .then(function (response) {
+        response.status;
+        response.statusText;
+        response.headers;
+        response.url;
+        if (response.status === 404) {
+          setMessage('Device is currently offline');
+          return;
+        }
+        if (response.ok) {
+          setStatus(!status);
+        }
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error.message);
+      });
+  };
+
+  
   return (
     <View style={styles.container}>
       <Block middle={true} column space="between">
@@ -27,9 +63,12 @@ const LightStatus = ({navigation}) => {
         <Text h5 style={{color: '#fafafa', alignItems: 'flex-start'}}>
           Toggle Device status
         </Text>
+        <Text h5 style={{color: '#fafafa', alignItems: 'flex-start'}}>
+          {message}
+        </Text>
         <Switch
           value={status}
-          onChange={() => setStatus(!status)}
+          onChange={handleLightToggle}
           trackColor={{true: 'orange', false: 'grey'}}
           thumbColor="#FFF"
         />
