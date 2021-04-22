@@ -9,8 +9,8 @@ import {
   Image,
   PermissionsAndroid,
   Platform,
-  Button,
 } from 'react-native';
+import {Button} from 'galio-framework';
 
 //import all the components we are going to use.
 import Geolocation from '@react-native-community/geolocation';
@@ -126,15 +126,16 @@ const App = () => {
             Latitude: {currentLatitude}
           </Text>
           <View style={{ marginTop: 20 }}>
-            <Button title="Button" onPress={()=>{getOneTimeLocation()}} />
+            <Button
+             color="red"
+             shadowless 
+             size="large"
+             onPress={()=>{getOneTimeLocation()}}
+            >
+                FETCH LOCATION
+            </Button>
           </View>
         </View>
-        <Text style={{ fontSize: 18, textAlign: 'center', color: 'grey' }}>
-          React Native Geolocation
-        </Text>
-        <Text style={{ fontSize: 16, textAlign: 'center', color: 'grey' }}>
-          www.aboutreact.com
-        </Text>
       </View>
     </SafeAreaView>
   );
