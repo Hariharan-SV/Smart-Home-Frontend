@@ -102,7 +102,10 @@ const LightStatus = ({navigation}) => {
             <Text h5 style={{"color":"#fafafa","alignItems":"flex-start"}}>Toggle Device status</Text>
             <Switch
                 value={status}
-                onChange={() => setStatus(!status)}
+                onChange={() => {
+                    handleLightToggle();
+                    setStatus(!status);
+                }}
                 trackColor={{true: 'orange', false: 'grey'}}
                 thumbColor="#FFF"
             />
