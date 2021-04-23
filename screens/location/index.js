@@ -15,10 +15,28 @@ import {Button} from 'galio-framework';
 //import all the components we are going to use.
 import Geolocation from '@react-native-community/geolocation';
 
-const App = () => {
+const LocationStatus = () => {
   const [currentLongitude, setCurrentLongitude] = useState('...');
   const [currentLatitude, setCurrentLatitude] = useState('...');
   const [locationStatus, setLocationStatus] = useState('');
+  var RNFS = require('react-native-fs');
+
+  async function file_exists(latitude,longtitude) {
+    if (await RNFS.exists(RNFS.DocumentDirectoryPath +"/location.json")){
+        console.log("Exists")
+    } else {
+        console.log("Doesn't Exist");
+    }
+    var path = RNFS.DocumentDirectoryPath + '/location.json';
+    // write the file
+    RNFS.writeFile(path, JSON.stringify({"latitude":latitude,"longtitude":longtitude}), 'utf8')
+    .then((success) => {
+        console.log('FILE WRITTEN!');
+    })
+    .catch((err) => {
+        console.log(err.message);
+    });
+  }
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -31,7 +49,7 @@ const App = () => {
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             {
               title: 'Location Access Required',
-              message: 'This App needs to Access your location',
+              message: 'This LocationStatus needs to Access your location',
             }
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -47,9 +65,9 @@ const App = () => {
       }
     };
     requestLocationPermission();
-    return () => {
+    /*return () => {
       Geolocation.clearWatch(watchID);
-    };
+    };*/
   }, []);
 
   const getOneTimeLocation = () => {
@@ -67,6 +85,7 @@ const App = () => {
         //Setting state Longitude to re re-render the Longitude Text
         setCurrentLatitude(currentLatitude);
         //Setting state Latitude to re re-render the Longitude Text
+        file_exists(currentLatitude,currentLongitude);
       },
       (error) => {
         setLocationStatus(error.message);
@@ -156,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default LocationStatus;
